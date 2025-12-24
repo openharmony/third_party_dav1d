@@ -1,0 +1,3 @@
+# third_party_dav1d
+
+仓库包含三方开源软件dav1d，用于视频编码格式AV1的解码
