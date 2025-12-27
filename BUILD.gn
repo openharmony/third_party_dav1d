@@ -1,0 +1,249 @@
+# Copyright (C) 2025 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+
+dav1d_root_dir = "//third_party/dav1d"
+
+config("dav1d_config") {
+  cflags = [
+    "-fno-rtti",
+    "-fno-exceptions",
+    "-Wall",
+    "-fno-common",
+    "-fstack-protector-strong",
+    "-FPIC",
+    "-FS",
+    "-O2",
+    "-D_FORTIFY_SOURCE=2",
+    "-D_REENTRANT",
+    "-pthread",
+    "-DNDEBUG",
+    "-DDAV1D_NO_LOGGING",
+  ]
+  if (target_cpu == "arm" || target_cpu == "arm64") {
+    cflags += [
+      "-march=armv8-a",
+    ]
+  }
+}
+
+config_header = "$target_gen_dir/config.h"
+version_header = "$target_gen_dir/vcs_version.h"
+
+dav1d_defines = [
+  "ARCH_LOONGARCH=0",
+  "ARCH_LOONGARCH32=0",
+  "ARCH_LOONGARCH64=0",
+  "ARCH_PPC64LE=0",
+  "ARCH_RISCV=0",
+  "ARCH_RV32=0",
+  "ARCH_RV64=0",
+  "ARCH_X86=0",
+  "ARCH_X86_32=0",
+  "ARCH_X86_64=0",
+  "CONFIG_16BPC=1",
+  "CONFIG_8BPC=1",
+  "CONFIG_LOG=0",
+  "CONFIG_MACOS_KPERF=0",
+  "ENDIANNESS_BIG=0",
+  "HAVE_ALIGNED_ALLOC=1",
+  "HAVE_ASM=1",
+  "HAVE_AS_ARCHEXT_DOTPROD_DIRECTIVE=0",
+  "HAVE_AS_ARCHEXT_I8MM_DIRECTIVE=0",
+  "HAVE_AS_ARCHEXT_SVE2_DIRECTIVE=0",
+  "HAVE_AS_ARCHEXT_SVE_DIRECTIVE=0",
+  "HAVE_AS_ARCH_DIRECTIVE=0",
+  "HAVE_AS_FUNC=0",
+  "HAVE_C11_GENERIC=1",
+  "HAVE_CLOCK_GETTIME=1",
+  "HAVE_DLSYM=0",
+  "HAVE_DOTPROD=0",
+  "HAVE_ELF_AUX_INFO=1",
+  "HAVE_GETAUXVAL=1",
+  "HAVE_I8MM=0",
+  "HAVE_IO_H=0",
+  "HAVE_MEMALIGN=1",
+  "HAVE_POSIX_MEMALIGN=1",
+  "HAVE_PTHREAD_GETAFFINITY_NP=1",
+  "HAVE_PTHREAD_NP_H=0",
+  "HAVE_PTHREAD_SETAFFINITY_NP=1",
+  "HAVE_PTHREAD_SETNAME_NP=1",
+  "HAVE_PTHREAD_SET_NAME_NP=0",
+  "HAVE_SVE=0",
+  "HAVE_SVE2=0",
+  "HAVE_SYS_TYPES_H=1",
+  "HAVE_UNISTD_H=1",
+  "PIC=3",
+  "DAV1D_VERSION=\"1.5.2\"",
+]
+
+libdav1d_tmpl_sources = [
+  "src/cdef_apply_tmpl.c",
+  "src/cdef_tmpl.c",
+  "src/fg_apply_tmpl.c",
+  "src/filmgrain_tmpl.c",
+  "src/ipred_prepare_tmpl.c",
+  "src/ipred_tmpl.c",
+  "src/itx_tmpl.c",
+  "src/lf_apply_tmpl.c",
+  "src/loopfilter_tmpl.c",
+  "src/looprestoration_tmpl.c",
+  "src/lr_apply_tmpl.c",
+  "src/mc_tmpl.c",
+  "src/recon_tmpl.c",
+]
+
+ohos_static_library("dav1d_bitdepth_8") {
+  write_file(config_header, "")
+  write_file(version_header, "")
+  defines = dav1d_defines
+  defines += [ "BITDEPTH=8" ]
+  if (target_cpu == "arm") {
+    defines += [ "ARCH_ARM"]
+  } else if(target_cpu == "arm64") {
+    defines += [ "ARCH_AARCH64"]
+  }
+  include_dirs = [
+    "$dav1d_root_dir",
+    "$target_gen_dir",
+    "include",
+  ]
+  defines += [
+    "TRIM_DSP_FUNCTIONS=1"
+  ]
+  sources = libdav1d_tmpl_sources
+}
+
+ohos_static_library("dav1d_bitdepth_16") {
+  write_file(config_header, "")
+  write_file(version_header, "")
+  defines = dav1d_defines
+  defines += [ "BITDEPTH=16" ]
+  if (target_cpu == "arm") {
+    defines += [ "ARCH_ARM"]
+  } else if(target_cpu == "arm64") {
+    defines += [ "ARCH_AARCH64"]
+  }
+  include_dirs = [
+    "$dav1d_root_dir",
+    "$target_gen_dir",
+    "include",
+  ]
+  defines += [
+    "TRIM_DSP_FUNCTIONS=1"
+  ]
+  sources = libdav1d_tmpl_sources
+}
+
+ohos_shared_library("dav1d_ohos") {
+  write_file(config_header, "")
+  write_file(version_header, "")
+  include_dirs = [
+    "$dav1d_root_dir",
+    "$target_gen_dir",
+    "include",
+    "src",
+    "src/arm",
+  ]
+
+  sources = [
+    "src/cdf.c",
+    "src/cpu.c",
+    "src/ctx.c",
+    "src/data.c",
+    "src/decode.c",
+    "src/dequant_tables.c",
+    "src/getbits.c",
+    "src/intra_edge.c",
+    "src/itx_1d.c",
+    "src/lf_mask.c",
+    "src/lib.c",
+    "src/log.c",
+    "src/mem.c",
+    "src/msac.c",
+    "src/obu.c",
+    "src/pal.c",
+    "src/picture.c",
+    "src/qm.c",
+    "src/ref.c",
+    "src/refmvs.c",
+    "src/scan.c",
+    "src/tables.c",
+    "src/thread_task.c",
+    "src/warpmv.c",
+    "src/wedge.c",
+  ]
+
+  defines = dav1d_defines
+  if (target_cpu == "arm") {
+    defines += [ "ARCH_ARM" ]
+    sources += [
+      "src/arm/cpu.c",
+      "src/arm/32/itx.S",
+      "src/arm/32/looprestoration_common.S",
+      "src/arm/32/msac.S",
+      "src/arm/32/refmvs.S",
+      "src/arm/32/cdef.S",
+      "src/arm/32/filmgrain.S",
+      "src/arm/32/ipred.S",
+      "src/arm/32/loopfilter.S",
+      "src/arm/32/looprestoration.S",
+      "src/arm/32/mc.S",
+      "src/arm/32/cdef16.S",
+      "src/arm/32/filmgrain16.S",
+      "src/arm/32/ipred16.S",
+      "src/arm/32/itx16.S",
+      "src/arm/32/loopfilter16.S",
+      "src/arm/32/looprestoration16.S",
+      "src/arm/32/mc16.S",
+    ]
+  } else if(target_cpu == "arm64") {
+    defines += [ "ARCH_AARCH64" ]
+    sources += [
+      "src/arm/cpu.c",
+      "src/arm/64/itx.S",
+      "src/arm/64/looprestoration_common.S",
+      "src/arm/64/msac.S",
+      "src/arm/64/refmvs.S",
+      "src/arm/64/cdef.S",
+      "src/arm/64/filmgrain.S",
+      "src/arm/64/ipred.S",
+      "src/arm/64/loopfilter.S",
+      "src/arm/64/looprestoration.S",
+      "src/arm/64/mc.S",
+      "src/arm/64/mc_dotprod.S",
+      "src/arm/64/cdef16.S",
+      "src/arm/64/filmgrain16.S",
+      "src/arm/64/ipred16.S",
+      "src/arm/64/itx16.S",
+      "src/arm/64/loopfilter16.S",
+      "src/arm/64/looprestoration16.S",
+      "src/arm/64/mc16.S",
+      "src/arm/64/mc16_sve.S",
+    ]
+  }
+
+  defines += [
+    "TRIM_DSP_FUNCTIONS=1"
+  ]
+
+  deps = [
+    ":dav1d_bitdepth_8",
+    ":dav1d_bitdepth_16",
+  ]
+  configs = [ ":dav1d_config" ]
+
+  part_name = "dav1d"
+  subsystem_name = "thirdparty"
+}
