@@ -1,0 +1,43 @@
+{
+    "name": "@ohos/dav1d",
+    "description": "dav1d is an AV1 cross-platform decoder, open-source, and focused on speed and correctness.",
+    "version": "1.5.2",
+    "license": "dav1d license",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "third_party/dav1d"
+    },
+    "dirs": {},
+    "scripts": {},
+    "licensePath": "COPYING",
+    "component": {
+        "name": "dav1d",
+        "subsystem": "thirdparty",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [ "standard" ],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": [],
+            "third_party": []
+        },
+        "build": {
+            "sub_component": ["//third_party/dav1d:dav1d_ohos"],
+            "inner_kits": [
+                {
+                    "type": "so",
+                    "name": "//third_party/dav1d:dav1d_ohos",
+                    "header": {
+                      "header_files": [
+                        "dav1d.h",
+                        "picture.h"
+                      ],
+                      "header_base": "//third_party/dav1d/include/dav1d"
+                    }
+                }
+            ],
+            "test": []
+        }
+    }
+}
