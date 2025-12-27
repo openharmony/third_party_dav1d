@@ -1,4 +1,5 @@
 /build*
+!BUILD.gn
 /Session.vim
 [._]*.swp
 *~
