@@ -15,6 +15,12 @@ import("//build/ohos.gni")
 
 dav1d_root_dir = "//third_party/dav1d"
 
+config("dav1d_public_cfg") {
+  include_dirs = [
+    "$dav1d_root_dir/include/dav1d",
+  ]
+}
+
 config("dav1d_config") {
   cflags = [
     "-fno-rtti",
@@ -243,6 +249,7 @@ ohos_shared_library("dav1d_ohos") {
     ":dav1d_bitdepth_16",
   ]
   configs = [ ":dav1d_config" ]
+  public_configs = [ ":dav1d_public_cfg" ]
 
   part_name = "dav1d"
   subsystem_name = "thirdparty"
