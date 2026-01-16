@@ -1,0 +1,11 @@
+[
+    {
+        "Name": "dav1d",
+        "License": "BSD 2-Clause License",
+        "License File": "LICENSE",
+        "Version Number": "1.5.2",
+        "Owner": "wangwei234@huawei.com",
+        "Upstream URL": "https://code.videolan.org/videolan/dav1d",
+        "Description": "dav1d is a cross-platform AV1 decoder, open-source, and focused on speed and correctness."
+    }
+]
