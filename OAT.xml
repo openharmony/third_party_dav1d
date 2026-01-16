@@ -31,6 +31,7 @@
                 <filteritem type="filename" name="PATENTS" desc="original files"/>
                 <filteritem type="filename" name="getopt.h" desc="original files"/>
                 <filteritem type="filename" name="LICENSE" desc="LICENSE"/>
+                <filteritem type="filename" name="README.OpenSource " desc="readme.opensource"/>
             </filefilter>
         </filefilterlist>
     </oatconfig>
