@@ -63,6 +63,6 @@ DAV1D_API void dav1d_close(Dav1dContext **c_out)
 c_out：要关闭的解码器实例。c_out将被设置为NULL
 ```
 ## 功能支持说明
-OpenHarmony目前仅集成了dav1d的解码能力，用于解析av1的码流，暂不支持视频编码功能。
+OpenHarmony目前集成了dav1d的解码能力，用于解析av1的码流。
 ## License
-详见仓库目录下的LICENSE.md文件
+详见仓库目录下的LICENSE文件
