@@ -68,6 +68,6 @@ c_out：The decoder instance to close. c_out will be set to NULL.
 
 ```
 ## Feature Support
-OpenHarmony currently integrates the decoding capability of dav1d, used to parse VP8 and VP9 bitstreams.
+OpenHarmony currently integrates the decoding capability of dav1d, used to parse av1 bitstreams.
 ## License
 See the LICENSE file in the root directory for details.
