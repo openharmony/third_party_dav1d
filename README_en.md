@@ -5,8 +5,8 @@ The repository includes the third-party open-source software dav1d, which is a v
 ## Directory Structure
 ```
 //third_party_dav1d
-|-- BUILD.gn       # GN build configuration file, defines build rules and dependencies
-|-- bundle.json    # Component package configuration file, describes component information and dependencies
+|-- BUILD.gn       # GN build configuration file, defines build rules and dependencies. Added by OpenHarmony
+|-- bundle.json    # Component package configuration file, describes component information and dependencies. Added by OpenHarmony
 |-- doc            # Project documentation directory
 |-- examples       # Example code directory
 |-- include        # Header files directory
@@ -66,5 +66,6 @@ c_out：The decoder instance to close. c_out will be set to NULL.
 ```
 ## Feature Support
 OpenHarmony currently integrates the decoding capability of dav1d, used to parse AV1 bitstreams.
+OpenHarmony does not mandate that device manufacturers support AV1 decoding, nor does it impose any compulsory profile or level requirements.
 ## License
 See the LICENSE file in the root directory for details.

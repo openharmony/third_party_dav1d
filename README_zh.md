@@ -5,8 +5,8 @@
 ## 目录结构
 ```
 //third_party_dav1d
-|-- BUILD.gn       # GN构建配置文件，定义编译规则和依赖关系
-|-- bundle.json    # 组件包配置文件，描述组件信息和依赖
+|-- BUILD.gn       # GN构建配置文件，定义编译规则和依赖关系。由OpenHarmony增加
+|-- bundle.json    # 组件包配置文件，描述组件信息和依赖。由OpenHarmony增加
 |-- doc            # 项目文档目录
 |-- examples       # 示例代码目录
 |-- include        # 头文件目录
@@ -61,5 +61,6 @@ c_out：要关闭的解码器实例。c_out将被设置为NULL
 ```
 ## 功能支持说明
 OpenHarmony目前集成了dav1d的解码能力，用于解析AV1的码流。
+OpenHarmony不强制要求设备厂商支持AV1的解码功能,且无强制profile、level的要求。
 ## License
 详见仓库目录下的LICENSE文件
