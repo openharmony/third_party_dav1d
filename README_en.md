@@ -21,51 +21,88 @@ System components in OpenHarmony need to reference the dav1d component in BUILD.
 // BUILD.gn
 external_deps + = [dav1d:dav1d_ohos]
 ```
-### Decoding Steps Using dav1d
-（1）Decoder Initialization
-```
-DAV1D_API void dav1d_default_settings(Dav1dSettings *s)
-s: Input settings context.
 
-```
-（2）open decoder instance
-```
-DAV1D_API int dav1d_open(Dav1dContext **c_out, const Dav1dSettings *s)
-c_out：The decoder instance to open. c_out will be set to the allocated context.
-s：Input settings context.
-note：The context must be freed using dav1d_close() when decoding is finished.
-return：0 on success, or < 0 (a negative DAV1D_ERR code) on error.
-
-```
-（3）Decode one frame
-```
-DAV1D_API int dav1d_send_data(Dav1dContext *c, Dav1dData *in)
-c：Input decoder instance.
-in：Input bitstream data. On success, ownership of the reference is passed to the library.
-return：0: Success, and the data was consumed.
-DAV1D_ERR(EAGAIN)：The data can't be consumed. dav1d_get_picture() should be called to get one or more frames before the function can consume new data.
-Other negative DAV1D_ERR codes: Error during decoding or because of invalid passed-in arguments. The reference remains owned by the caller.
-
-```
-（4）Get the decoded image
-```
-DAV1D_API int dav1d_get_picture(Dav1dContext *c, Dav1dPicture *out)
-c：Input decoder instance.
-out：Output frame. The caller assumes ownership of the returned reference.
-return：0: Success, and a frame is returned.
-DAV1D_ERR(EAGAIN): Not enough data to output a frame. dav1d_send_data() should be called with new input.
-Other negative DAV1D_ERR codes: Error during decoding or because of invalid passed-in arguments.
-note：To drain buffered frames from the decoder (i.e. on end of stream), call this function until it returns DAV1D_ERR(EAGAIN).
-
-```
-（5）Destroy the decoder
-```
-DAV1D_API void dav1d_close(Dav1dContext **c_out)
-c_out：The decoder instance to close. c_out will be set to NULL.
-
-```
 ## Feature Support
-OpenHarmony currently integrates the decoding capability of dav1d, used to parse AV1 bitstreams.
-OpenHarmony does not mandate that device manufacturers support AV1 decoding, nor does it impose any compulsory profile or level requirements.
+**Since：** 6.1
+(1) When the application attempt to create a decoder according to the [platform rules](https://gitcode.com/openharmony/docs/blob/master/en/application-dev/media/avcodec/avcodec-support-formats.md), the system preferentially creates a hardware decoder instance. If the system does not support hardware decoding or the hardware decoder resources are insufficient, the system creates a software decoder instance.
+
+(2) AV1 software decoding is an optional capability in OpenHarmony. you can enable/disable the feature via your own product configuration. The product configuration path can be as follows: 
+```
+//vendor/${pruduct_company}/${product_name}/config.json
+```
+The configuration can be set as shown below:
+```json
+"multimedia:av_codec": {
+    "features": {
+        "av_codec_support_av1_decoder": false,
+    }
+}
+```
+(3) According to the OpenHamony PCS ([Product Compatibility Specification](https://www.openharmony.cn/systematic)), If AV1 decoding is supported, the recommended AV1 decoding capability is at least 1080p(Main Profile(8bit、10bit)、High Profile(8bit、10bit),level 4.0). You can modify the supported Profile and Level in the AVCodec, the path is as follows：
+```
+//foundation/multimedia/avcodec/services/engine/codec/video/av1decoder/av1decoder.cpp
+```
+and the function:
+```C++
+void Av1Decoder::GetCodecCapability(std::vector<CapabilityData> &capaArray)
+{
+    ...
+    CapabilityData capsData;
+    ...
+    // Assign supported profiles，e.g., AV1 Main Profile，High Profile
+    capsData.profile = {
+        static_cast<int32_t>(AV1_PROFILE_MAIN),
+        static_cast<int32_t>(AV1_PROFILE_HIGH)
+    };
+    std::vector<int32_t> levels；
+    // Assign supported levels for the profile，e.g., level 4.0
+    for (int32_t j = 0; j <= static_cast<int32_t>(AV1Level::AV1_LEVEL_4_0); j++) {
+        levels.emplace_back(j);
+    }
+    capsData.profileLevelsMap.insert({static_cast<int32_t>(AV1_PROFILE_MAIN), levels});
+    ...
+    capaArray.emplace_back(capsData);
+}
+```
+According to the AV1 standard, the above Profiles and Levels are fully defined in [avcodec_info.h](https://gitcode.com/openharmony/multimedia_av_codec/blob/master/interfaces/inner_api/native/avcodec_info.h):
+```C
+enum AV1Profile : int32_t {
+    AV1_PROFILE_MAIN = 0,
+    AV1_PROFILE_HIGH = 1,
+    AV1_PROFILE_PROFESSIONAL = 2,
+};
+
+enum AV1Level : int32_t {
+    AV1_LEVEL_20 = 0,
+    AV1_LEVEL_21 = 1,
+    AV1_LEVEL_22 = 2,
+    ...
+    AV1_LEVEL_72 = 22,
+    AV1_LEVEL_73 = 23,
+};
+```
+If application developers need to be aware of them, the definitions must also be included in both the [SDK](https://gitcode.com/openharmony/interface_sdk_c/blob/master/multimedia/av_codec/native_avcodec_base.h) and [AVCodec](https://gitcode.com/openharmony/multimedia_av_codec/blob/master/interfaces/kits/c/native_avcodec_base.h):
+```C
+typedef enum OH_AV1Profile {
+    AV1_PROFILE_MAIN = 0,
+    AV1_PROFILE_HIGH = 1,
+    AV1_PROFILE_PROFESSIONAL = 2,
+} OH_AV1Profile;
+
+typedef enum OH_AV1Level {
+    AV1_LEVEL_20 = 0,
+    AV1_LEVEL_21 = 1,
+    AV1_LEVEL_22 = 2,
+    ...
+    AV1_LEVEL_72 = 22,
+    AV1_LEVEL_73 = 23,
+} OH_AV1Level;
+```
+Full documentation is available:[OH_AV1Profile](https://gitcode.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis-avcodec-kit/capi-native-avcodec-base-h.md#oh_av1profile), [OH_AV1level](https://gitcode.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis-avcodec-kit/capi-native-avcodec-base-h.md#oh_av1level).
+
+In addition, if support for the Professional Profile (12-bit) is required, the display system (specifically SurfaceBuffer) must support 12-bit color depth.
+
+(4) Application developers can query the above configurations and capabilities through the AVCodec interface. see [Obtaining Supported Codecs](https://gitcode.com/openharmony/docs/blob/master/en/application-dev/media/avcodec/obtain-supported-codecs.md#obtaining-supported-codecs), [Checking the Codec Profile and Level Supported](https://gitcode.com/openharmony/docs/blob/master/en/application-dev/media/avcodec/obtain-supported-codecs.md#checking-the-codec-profile-and-level-supported).
+
 ## License
 See the LICENSE file in the root directory for details.
