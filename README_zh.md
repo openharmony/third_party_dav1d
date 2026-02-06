@@ -1,7 +1,5 @@
 # third_party_dav1d
 ## 概述
-本文档适用于OpenHarmony 6.1及以上版本。
-
 本仓库集成第三方开源软件dav1d(AV1标准的视频解码器的开源实现)。在OpenHarmony中，dav1d主要作为媒体子系统的基础组件，为AVCodec提供AV1码流的解码能力。
 
 dav1d来源：https://code.videolan.org/videolan/dav1d
@@ -31,17 +29,37 @@ dav1d来源：https://code.videolan.org/videolan/dav1d
 (2) 服务层中的软件解码器模块将对dav1d进行加载和封装。
 
 ### 集成与配置
-(1) 部件AVCodec通过BUILD.gn文件引用部件dav1d，以集成并使用其AV1的解码能力。
+
+部件AVCodec通过feature配置的方式来使能AV1软解码。
+
+(1) 声明：AVCodec仓的[bundle.json](https://gitcode.com/openharmony/multimedia_av_codec/blob/master/bundle.json)里声明的features：av_codec_support_av1_decoder用于使能AV1软解码。
+
+(2) 定义与赋值：多条件判断是否使能VP8或VP9解码器。
+
+* 在AVCodec仓[Config.gni](https://gitcode.com/openharmony/multimedia_av_codec/blob/master/config.gni)中通过declare_args()定义并默认使能AV1软解码。
+* 产品配置feature的值会覆盖上述默认值，参考[产品如何配置部件的feautre](https://gitcode.com/openharmony/build/blob/master/docs/%E9%83%A8%E4%BB%B6%E5%8C%96%E7%BC%96%E8%AF%91%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5.md#11-%E4%BA%A7%E5%93%81%E5%A6%82%E4%BD%95%E9%85%8D%E7%BD%AE%E9%83%A8%E4%BB%B6%E7%9A%84feature)。
+* AVCodec仓的[Config.gni](https://gitcode.com/openharmony/multimedia_av_codec/blob/master/config.gni)会校验部件dav1d是否被裁剪。如果部件被裁剪，则不使能AV1软解码。
 ```
-// BUILD.gn
-external_deps += ["dav1d:dav1d_ohos"]
-```
-(2) 部件AVCodec在[bundle.json](https://gitcode.com/openharmony/multimedia_av_codec/blob/master/bundle.json)里声明的features：av_codec_support_av1_decoder用于使能AV1软解码，并在[Config.gni](https://gitcode.com/openharmony/multimedia_av_codec/blob/master/config.gni)中做了初始化，方式如下：
-```
+// Config.gni
 declare_args() {
-    av_codec_support_av1_decoder = true    // true表示默认开启AV1软解码
+    // 初始化true，表示默认开启AV1软解码
+    av_codec_support_av1_decoder = true         
+}
+
+// 如果产品裁剪了部件dav1d，将不开启AV1软解码
+if (!defined(global_parts_info) || !defined(global_parts_info.multimedia_dav1d)) {
+    av_codec_support_av1_decoder = false
 }
 ```
+
+(3) 使用：AVCodec仓的[BUILD.gn](https://gitcode.com/openharmony/multimedia_av_codec/blob/master/services/engine/codec/video/BUILD.gn)通过判断是否使能AV1解码器来决定是否引用部件dav1d，以集成并使用其AV1的解码能力。
+```
+// BUILD.gn
+if (av_codec_support_av1_decoder) {
+    external_deps += ["dav1d:dav1d_ohos"]
+}
+```
+
 ### 实现及调用
 ```
             +------------------+      +-----------------------------+
@@ -110,18 +128,37 @@ typedef enum OH_AV1Level {
 ```
 
 ## 能力定制说明
-(1) AV1软解码为OpenHarmony中的可选能力。厂商可通过配置文件使能，配置文件路径可以如下：
-```
-    //vendor/${product_company}/${product_name}/config.json
-```
-配置方式可以如下，在av_codec部件节点的features中配置av_codec_support_av1_decoder, 值为true表示开启，false表示关闭：
+(1) OpenHarmony将AV1软解码作为可选能力，厂商可通过在config.json中装配部件dav1d并使能部件AVCodec特性来开启软解码能力：
+* 装配部件dav1d
+  * 参考[装配部件](https://gitcode.com/openharmony/docs/blob/master/zh-cn/design/OpenHarmony%E9%83%A8%E4%BB%B6%E8%AE%BE%E8%AE%A1%E5%92%8C%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97.md#%E8%A3%85%E9%85%8D%E9%83%A8%E4%BB%B6)，配置文件路径可以是`//vendor/${product_company}/${product_name}/config.json`    
+  * 装配时内容可以如下：
 ```json
-"multimedia:av_codec": {
-    "features": {
-        "av_codec_support_av1_decoder": false, // 设置false为关闭AV1软解码
-    }
+{
+  ...
+  "subsystems": [{
+      "subsystem": "thirdparty",
+      "components": [{
+          "component": "dav1d",  // 装配部件dav1d
+          "features": []
+        }]
+    }]
 }
 ```
+* 配置部件AVCodec的特性，参考[配置特性](https://gitcode.com/openharmony/docs/blob/master/zh-cn/design/OpenHarmony%E9%83%A8%E4%BB%B6%E8%AE%BE%E8%AE%A1%E5%92%8C%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97.md#%E9%85%8D%E7%BD%AE%E7%89%B9%E6%80%A7)，在上述config.json装配部件AVCodec的同时配置其特性av_codec_support_av1_decoder, 值为true表示开启AV1软解码，false表示关闭AV1软解码：
+```json
+{
+  {
+    "subsystem": "multimedia",
+    "components": [{
+        "component": "av_codec",   // 配置部件AVCodec的特性
+        "features": [ 
+            "av_codec_support_av1_decoder = true", // 配置特性为true，表示开启AV1软解码
+        ] 
+      }]
+  }
+}
+```
+
 (2) 厂商可根据自身的CPU性能及系统能力修改AV1支持的Profile与Level，即在如下源码中，修改函数GetCodecCapability出参capaArray的赋值，完成后需重新编译相关组件，可通过[OH_AVCapability_GetSupportedProfiles](https://gitcode.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis-avcodec-kit/capi-native-avcapability-h.md#oh_avcapability_getsupportedprofiles)，[OH_AVCapability_GetSupportedLevelsForProfile](https://gitcode.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis-avcodec-kit/capi-native-avcapability-h.md#oh_avcapability_getsupportedlevelsforprofile)接口获取实际支持的Profile与Level情况来验证：
 ```
     //foundation/multimedia/av_codec/services/engine/codec/video/av1decoder/av1decoder.cpp
@@ -149,7 +186,7 @@ void Av1Decoder::GetCodecCapability(std::vector<CapabilityData> &capaArray)
 ```
 注：配置Main Profile(10-bit), High Profile(10-bit)和Professional Profile(10-bit, 12-bit)时，依赖OH图形系统（的SurfaceBuffer）支持10-bit和12-bit，否则会出现内存申请失败导致解码器初始化失败。
 
-(3) 另外，dav1d仅适用于软解解码。对`硬件解码`场景：服务层CodecFactory调用`HCodecLoader`的静态方法CreateByName()创建HCodec/HCodecList，它们通过HDI接口调用HAL或硬件解码器，厂商需适配并满足`HDI`接口的要求。
+(3) 另外，dav1d仅适用于软件解码。对`硬件解码`场景：服务层CodecFactory调用`HCodecLoader`的静态方法CreateByName()创建HCodec/HCodecList，它们通过HDI接口调用HAL或硬件解码器，厂商需适配并满足`HDI`接口的要求。
 
 ## License
 具体许可条款请参见仓库根目录下的 LICENSE 文件。
