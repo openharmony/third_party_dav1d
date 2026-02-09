@@ -34,11 +34,11 @@ dav1d来源：https://code.videolan.org/videolan/dav1d
 
 (1) 声明：AVCodec仓的[bundle.json](https://gitcode.com/openharmony/multimedia_av_codec/blob/master/bundle.json)里声明的features：av_codec_support_av1_decoder用于使能AV1软解码。
 
-(2) 定义与赋值：多条件判断是否使能VP8或VP9解码器。
+(2) 定义与赋值：多条件判断是否使能AV1解码器。
 
 * 在AVCodec仓[Config.gni](https://gitcode.com/openharmony/multimedia_av_codec/blob/master/config.gni)中通过declare_args()定义并默认使能AV1软解码。
 * 产品配置feature的值会覆盖上述默认值，参考[产品如何配置部件的feautre](https://gitcode.com/openharmony/build/blob/master/docs/%E9%83%A8%E4%BB%B6%E5%8C%96%E7%BC%96%E8%AF%91%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5.md#11-%E4%BA%A7%E5%93%81%E5%A6%82%E4%BD%95%E9%85%8D%E7%BD%AE%E9%83%A8%E4%BB%B6%E7%9A%84feature)。
-* AVCodec仓的[Config.gni](https://gitcode.com/openharmony/multimedia_av_codec/blob/master/config.gni)会校验部件dav1d是否被裁剪。如果部件被裁剪，则不使能AV1软解码。
+* AVCodec仓的[Config.gni](https://gitcode.com/openharmony/multimedia_av_codec/blob/master/config.gni)会校验部件dav1d是否装配。如果部件[未装配](https://gitcode.com/openharmony/build/blob/master/docs/%E9%83%A8%E4%BB%B6%E5%8C%96%E7%BC%96%E8%AF%91%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5.md)，则不使能AV1软解码。
 ```
 // Config.gni
 declare_args() {
