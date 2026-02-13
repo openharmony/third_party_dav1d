@@ -2,7 +2,7 @@
     "name": "@ohos/dav1d",
     "description": "dav1d is an AV1 cross-platform decoder, open-source, and focused on speed and correctness.",
     "version": "1.5.2",
-    "license": "dav1d license",
+    "license": "BSD-2-Clause",
     "publishAs": "code-segment",
     "segment": {
         "destPath": "third_party/dav1d"
