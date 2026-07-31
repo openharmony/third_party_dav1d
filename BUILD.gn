@@ -129,6 +129,7 @@ ohos_static_library("dav1d_bitdepth_8") {
     "TRIM_DSP_FUNCTIONS=1"
   ]
   sources = libdav1d_tmpl_sources
+  branch_protector_ret = "pac_ret"
 }
 
 ohos_static_library("dav1d_bitdepth_16") {
@@ -150,6 +151,7 @@ ohos_static_library("dav1d_bitdepth_16") {
     "TRIM_DSP_FUNCTIONS=1"
   ]
   sources = libdav1d_tmpl_sources
+  branch_protector_ret = "pac_ret"
 }
 
 ohos_shared_library("dav1d_ohos") {
@@ -162,7 +164,7 @@ ohos_shared_library("dav1d_ohos") {
     "src",
     "src/arm",
   ]
-
+  branch_protector_ret = "pac_ret"
   sources = [
     "src/cdf.c",
     "src/cpu.c",
