@@ -130,6 +130,11 @@ ohos_static_library("dav1d_bitdepth_8") {
   ]
   sources = libdav1d_tmpl_sources
   branch_protector_ret = "pac_ret"
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
 }
 
 ohos_static_library("dav1d_bitdepth_16") {
@@ -152,6 +157,11 @@ ohos_static_library("dav1d_bitdepth_16") {
   ]
   sources = libdav1d_tmpl_sources
   branch_protector_ret = "pac_ret"
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
 }
 
 ohos_shared_library("dav1d_ohos") {
@@ -165,6 +175,12 @@ ohos_shared_library("dav1d_ohos") {
     "src/arm",
   ]
   branch_protector_ret = "pac_ret"
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
+  
   sources = [
     "src/cdf.c",
     "src/cpu.c",

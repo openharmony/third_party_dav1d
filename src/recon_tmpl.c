@@ -728,6 +728,7 @@ static int decode_coefs(Dav1dTaskContext *const t,
     return eob;
 }
 
+__attribute__((no_sanitize("cfi-icall")))
 static void read_coef_tree(Dav1dTaskContext *const t,
                            const enum BlockSize bs, const Av1Block *const b,
                            const enum RectTxfmSize ytx, const int depth,
@@ -935,6 +936,7 @@ void bytefn(dav1d_read_coef_blocks)(Dav1dTaskContext *const t,
     }
 }
 
+__attribute__((no_sanitize("cfi-icall")))
 static int mc(Dav1dTaskContext *const t,
               pixel *const dst8, int16_t *const dst16, const ptrdiff_t dst_stride,
               const int bw4, const int bh4,
@@ -1049,6 +1051,7 @@ static int mc(Dav1dTaskContext *const t,
     return 0;
 }
 
+__attribute__((no_sanitize("cfi-icall")))
 static int obmc(Dav1dTaskContext *const t,
                 pixel *const dst, const ptrdiff_t dst_stride,
                 const uint8_t *const b_dim, const int pl,
@@ -1112,6 +1115,7 @@ static int obmc(Dav1dTaskContext *const t,
     return 0;
 }
 
+__attribute__((no_sanitize("cfi-icall")))
 static int warp_affine(Dav1dTaskContext *const t,
                        pixel *dst8, int16_t *dst16, const ptrdiff_t dstride,
                        const uint8_t *const b_dim, const int pl,
@@ -1173,6 +1177,7 @@ static int warp_affine(Dav1dTaskContext *const t,
     return 0;
 }
 
+__attribute__((no_sanitize("cfi-icall")))
 void bytefn(dav1d_recon_b_intra)(Dav1dTaskContext *const t, const enum BlockSize bs,
                                  const enum EdgeFlags intra_edge_flags,
                                  const Av1Block *const b)
@@ -1554,6 +1559,7 @@ void bytefn(dav1d_recon_b_intra)(Dav1dTaskContext *const t, const enum BlockSize
     }
 }
 
+__attribute__((no_sanitize("cfi-icall")))
 int bytefn(dav1d_recon_b_inter)(Dav1dTaskContext *const t, const enum BlockSize bs,
                                 const Av1Block *const b)
 {
@@ -2050,6 +2056,7 @@ void bytefn(dav1d_filter_sbrow_cdef)(Dav1dTaskContext *const tc, const int sby) 
     bytefn(dav1d_cdef_brow)(tc, p, mask, start, end, 0, sby);
 }
 
+__attribute__((no_sanitize("cfi-icall")))
 void bytefn(dav1d_filter_sbrow_resize)(Dav1dFrameContext *const f, const int sby) {
     const int sbsz = f->sb_step;
     const int y = sby * sbsz * 4;
