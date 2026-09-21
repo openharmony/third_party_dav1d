@@ -242,6 +242,12 @@ ohos_shared_library("dav1d_ohos") {
     ]
   }
 
+  ldflags =[
+    "-Wl,--exclude-libs=libc++_static.a",
+  ]
+
+  version_script = "dav1d_ohos.map"
+
   defines += [
     "TRIM_DSP_FUNCTIONS=1"
   ]

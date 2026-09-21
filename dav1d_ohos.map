@@ -1,0 +1,65 @@
+# Copyright (C) 2026 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under ithe License.
+
+# Version script for libdav1d_ohos.so
+#
+# Only export the official public API defined in dav1d.h.
+# All internal implementation details (even if prefixed with dav1d_) must be hidden.
+# This reduces binary size and prevents symbol collisions.
+
+DAV1D_OHOS_1.0 {
+  global:
+    extern "C" {
+      /* Core Decoder Lifecycle */
+      dav1d_open;
+      dav1d_close;
+      
+      /* Decoding Operations */
+      dav1d_send_data;
+      dav1d_get_picture;
+      dav1d_flush;
+      
+      /* Version & Info */
+      dav1d_version;
+      dav1d_version_api;
+      dav1d_get_frame_delay;
+      
+      /* Data Management (Public API) */
+      dav1d_data_create;
+      dav1d_data_wrap;
+      dav1d_data_wrap_user_data;
+      dav1d_data_ref;
+      dav1d_data_unref;
+      
+      /* Picture Management (Public API) */
+      dav1d_picture_alloc_copy;
+      dav1d_picture_ref;
+      dav1d_picture_unref;
+      dav1d_picture_move_ref;
+      
+      /* CPU & Config (Public API) */
+      dav1d_set_cpu_flags_mask;
+      dav1d_num_logical_processors;
+      dav1d_init_cpu;
+      
+      /* Error Handling (Public API) */
+      dav1d_get_decode_error_data_props;
+      dav1d_get_event_flags;
+      dav1d_picture_get_event_flags;
+
+      dav1d_default_settings;
+    };
+
+  local:
+    *;
+};
