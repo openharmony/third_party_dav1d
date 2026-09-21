@@ -528,7 +528,8 @@ static inline void splat_oneref_mv(const Dav1dContext *const c,
     c->refmvs_dsp.splat_mv(&t->rt.r[(t->by & 31) + 5], &tmpl, t->bx, bw4, bh4);
 }
 
-__attribute__((no_sanitize("cfi-icall")))static inline void splat_intrabc_mv(const Dav1dContext *const c,
+__attribute__((no_sanitize("cfi-icall")))
+static inline void splat_intrabc_mv(const Dav1dContext *const c,
                                     Dav1dTaskContext *const t,
                                     const enum BlockSize bs,
                                     const Av1Block *const b,
