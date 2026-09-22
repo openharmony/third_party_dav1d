@@ -262,6 +262,8 @@ ohos_shared_library("dav1d_ohos") {
     ]
   }
 
+  version_script = "dav1d_ohos.map"
+
   defines += [
     "TRIM_DSP_FUNCTIONS=1"
   ]
