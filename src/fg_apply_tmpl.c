@@ -97,6 +97,7 @@ static void generate_scaling(const int bitdepth,
 }
 
 #ifndef UNIT_TEST
+__attribute__((no_sanitize("cfi-icall")))
 void bitfn(dav1d_prep_grain)(const Dav1dFilmGrainDSPContext *const dsp,
                              Dav1dPicture *const out,
                              const Dav1dPicture *const in,
@@ -158,6 +159,7 @@ void bitfn(dav1d_prep_grain)(const Dav1dFilmGrainDSPContext *const dsp,
     }
 }
 
+__attribute__((no_sanitize("cfi-icall")))
 void bitfn(dav1d_apply_grain_row)(const Dav1dFilmGrainDSPContext *const dsp,
                                   Dav1dPicture *const out,
                                   const Dav1dPicture *const in,

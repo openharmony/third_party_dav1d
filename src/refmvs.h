@@ -138,6 +138,7 @@ int dav1d_refmvs_init_frame(refmvs_frame *rf,
 
 // cache the current tile/sbrow (or frame/sbrow)'s projectable motion vectors
 // into buffers for use in future frame's temporal MV prediction
+__attribute__((no_sanitize("cfi-icall")))
 static inline void dav1d_refmvs_save_tmvs(const Dav1dRefmvsDSPContext *const dsp,
                                           const refmvs_tile *const rt,
                                           const int col_start8, int col_end8,

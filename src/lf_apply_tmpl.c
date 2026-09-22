@@ -38,6 +38,8 @@
 // contain at most 2 stripes. Each stripe requires 4 rows pixels (2 above
 // and 2 below) the final 4 rows are used to swap the bottom of the last
 // stripe with the top of the next super block row.
+
+__attribute__((no_sanitize("cfi-icall")))
 static void backup_lpf(const Dav1dFrameContext *const f,
                        pixel *dst, const ptrdiff_t dst_stride,
                        const pixel *src, const ptrdiff_t src_stride,
@@ -173,6 +175,7 @@ void bytefn(dav1d_copy_lpf)(Dav1dFrameContext *const f,
     }
 }
 
+__attribute__((no_sanitize("cfi-icall")))
 static inline void filter_plane_cols_y(const Dav1dFrameContext *const f,
                                        const int have_left,
                                        const uint8_t (*lvl)[4],
@@ -209,6 +212,7 @@ static inline void filter_plane_cols_y(const Dav1dFrameContext *const f,
     }
 }
 
+__attribute__((no_sanitize("cfi-icall")))
 static inline void filter_plane_rows_y(const Dav1dFrameContext *const f,
                                        const int have_top,
                                        const uint8_t (*lvl)[4],
@@ -239,6 +243,7 @@ static inline void filter_plane_rows_y(const Dav1dFrameContext *const f,
     }
 }
 
+__attribute__((no_sanitize("cfi-icall")))
 static inline void filter_plane_cols_uv(const Dav1dFrameContext *const f,
                                         const int have_left,
                                         const uint8_t (*lvl)[4],
@@ -276,6 +281,7 @@ static inline void filter_plane_cols_uv(const Dav1dFrameContext *const f,
     }
 }
 
+__attribute__((no_sanitize("cfi-icall")))
 static inline void filter_plane_rows_uv(const Dav1dFrameContext *const f,
                                         const int have_top,
                                         const uint8_t (*lvl)[4],

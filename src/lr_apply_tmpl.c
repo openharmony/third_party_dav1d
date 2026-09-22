@@ -33,6 +33,7 @@
 
 #include "src/lr_apply.h"
 
+__attribute__((no_sanitize("cfi-icall")))
 static void lr_stripe(const Dav1dFrameContext *const f, pixel *p,
                       const pixel (*left)[4], int x, int y,
                       const int plane, const int unit_w, const int row_h,

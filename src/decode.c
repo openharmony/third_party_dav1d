@@ -511,6 +511,7 @@ static inline unsigned get_prev_frame_segid(const Dav1dFrameContext *const f,
     return seg_id;
 }
 
+__attribute__((no_sanitize("cfi-icall")))
 static inline void splat_oneref_mv(const Dav1dContext *const c,
                                    Dav1dTaskContext *const t,
                                    const enum BlockSize bs,
@@ -527,6 +528,7 @@ static inline void splat_oneref_mv(const Dav1dContext *const c,
     c->refmvs_dsp.splat_mv(&t->rt.r[(t->by & 31) + 5], &tmpl, t->bx, bw4, bh4);
 }
 
+__attribute__((no_sanitize("cfi-icall")))
 static inline void splat_intrabc_mv(const Dav1dContext *const c,
                                     Dav1dTaskContext *const t,
                                     const enum BlockSize bs,
@@ -542,6 +544,7 @@ static inline void splat_intrabc_mv(const Dav1dContext *const c,
     c->refmvs_dsp.splat_mv(&t->rt.r[(t->by & 31) + 5], &tmpl, t->bx, bw4, bh4);
 }
 
+__attribute__((no_sanitize("cfi-icall")))
 static inline void splat_tworef_mv(const Dav1dContext *const c,
                                    Dav1dTaskContext *const t,
                                    const enum BlockSize bs,
@@ -559,6 +562,7 @@ static inline void splat_tworef_mv(const Dav1dContext *const c,
     c->refmvs_dsp.splat_mv(&t->rt.r[(t->by & 31) + 5], &tmpl, t->bx, bw4, bh4);
 }
 
+__attribute__((no_sanitize("cfi-icall")))
 static inline void splat_intraref(const Dav1dContext *const c,
                                   Dav1dTaskContext *const t,
                                   const enum BlockSize bs,
@@ -2591,6 +2595,7 @@ static int check_trailing_bits_after_symbol_coder(const MsacContext *const msac)
     return 0;
 }
 
+__attribute__((no_sanitize("cfi-icall")))
 int dav1d_decode_tile_sbrow(Dav1dTaskContext *const t) {
     const Dav1dFrameContext *const f = t->f;
     const enum BlockLevel root_bl = f->seq_hdr->sb128 ? BL_128X128 : BL_64X64;
@@ -3193,6 +3198,7 @@ error:
     return retval;
 }
 
+__attribute__((no_sanitize("cfi-icall")))
 int dav1d_decode_frame_main(Dav1dFrameContext *const f) {
     const Dav1dContext *const c = f->c;
     int retval = DAV1D_ERR(EINVAL);

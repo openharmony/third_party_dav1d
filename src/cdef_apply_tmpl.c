@@ -94,6 +94,7 @@ static int adjust_strength(const int strength, const unsigned var) {
     return (strength * (4 + i) + 8) >> 4;
 }
 
+__attribute__((no_sanitize("cfi-icall")))
 void bytefn(dav1d_cdef_brow)(Dav1dTaskContext *const tc,
                              pixel *const p[3],
                              const Av1Filter *const lflvl,
