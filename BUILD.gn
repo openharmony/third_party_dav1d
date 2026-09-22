@@ -37,7 +37,7 @@ config("dav1d_config") {
     "-DNDEBUG",
     "-DDAV1D_NO_LOGGING",
   ]
-  if (target_cpu == "arm" || target_cpu == "arm64") {
+  if (target_cpu == "arm64") {
     cflags += [
       "-march=armv8-a",
     ]
